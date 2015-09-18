@@ -1,0 +1,21 @@
+body {
+	background-color: tan;
+	font-family: Helvecta, sans-serif;
+	font-size: 10pt;
+	text-align: justify;
+}
+
+/** Menu bar */
+menu-bar {
+}
+.menu-title {
+    font-size: 25px;
+    text-decoration: none;
+    color: black;
+}
+.menu-links {
+    font-size: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+}
