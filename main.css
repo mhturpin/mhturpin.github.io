@@ -5,6 +5,27 @@ body {
 	text-align: justify;
 }
 
+img {
+    max-width: 25%;
+}
+
+nav {
+    margin-left: 100px;
+    display: inline-block;
+    font-size: 20px;
+    text-align: center;
+}
+
+/** Links */
+a {
+    color: blue;
+    text-decoration: none;
+}
+a:hover {
+    color: black;
+    text-decoration: underline;
+}
+
 /** Menu bar */
 menu-bar {
 }
@@ -13,9 +34,14 @@ menu-bar {
     text-decoration: none;
     color: black;
 }
+
 .menu-links {
-    font-size: 20px;
-    text-align: center;
+    margin-right: 75px;
     text-decoration: none;
     color: black;
+}
+
+/** Wrapper */
+.wrapper {
+    
 }
