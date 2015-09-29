@@ -9,7 +9,6 @@ img {
 }
 
 nav {
-    
     display: inline-block;
     font-size: 1.55em;
     text-align: center;
@@ -46,7 +45,7 @@ menu-bar {
         max-width: 50vw;
     }
     .menu-links {
-        padding-left: 0px;
+        font-size: 2.5em;
     }
 }
 
