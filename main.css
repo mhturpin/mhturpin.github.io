@@ -44,6 +44,7 @@ menu-bar {
 @media Screen and (max-device-width: 1100px) {
     body {
         background-color: blue;
+        font-size: 3em;
     }
 }
 
