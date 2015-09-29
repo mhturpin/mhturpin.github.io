@@ -11,7 +11,7 @@ img {
 nav {
     
     display: inline-block;
-    font-size: 20pt;
+    font-size: 1.55em;
     text-align: center;
 }
 
@@ -29,7 +29,7 @@ a:hover {
 menu-bar {
 }
 .menu-title {
-    font-size: 24pt;
+    font-size: 1.8em;
     text-decoration: none;
     color: black;
 }
