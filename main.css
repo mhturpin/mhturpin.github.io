@@ -42,7 +42,7 @@ menu-bar {
 /* Screen Settings */
 @media Screen and (max-device-width: 1100px) {
     body {
-        font-size: 12pt;
+        font-size: 24pt;
     }
     img {
         max-width: 50vw;
