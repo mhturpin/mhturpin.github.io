@@ -9,13 +9,13 @@ img {
 }
 
 nav {
-    margin-left: 100px;
+    
     display: inline-block;
     font-size: 1.65em;
     text-align: center;
 }
 
-/* Links */
+/* Links (http://mchow01.github.io/)*/ 
 a {
     color: blue;
     text-decoration: none;
@@ -35,7 +35,23 @@ menu-bar {
 }
 
 .menu-links {
-    margin-right: 75px;
+    padding-left: 75px;
     text-decoration: none;
     color: black;
 }
+
+/* Screen Settings */
+@media Screen and (max-width: 700px) {
+    body {
+        background-color: blue;
+    }
+}
+
+
+
+
+
+
+
+
+
