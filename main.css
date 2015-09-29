@@ -41,7 +41,7 @@ menu-bar {
 }
 
 /* Screen Settings */
-@media Screen and (max-width: 700px) {
+@media Screen and (max-device-width: 1100px) {
     body {
         background-color: blue;
     }
