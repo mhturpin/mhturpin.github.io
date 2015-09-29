@@ -47,6 +47,11 @@ menu-bar {
     img {
         max-width: 50vw;
     }
+    nav {
+        display: inline-block;
+        font-size: 1.55em;
+        text-align: center;
+    }
 }
 
 
