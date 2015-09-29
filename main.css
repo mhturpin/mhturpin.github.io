@@ -1,22 +1,21 @@
 body {
 	background-color: tan;
-	font-family: Helvecta, sans-serif;
-	font-size: 10pt;
-	text-align: justify;
+	font-family: "Merriweather", sans-serif;
+	font-size: 1em;
 }
 
 img {
-    max-width: 25%;
+    max-width: 300px;
 }
 
 nav {
     margin-left: 100px;
     display: inline-block;
-    font-size: 20px;
+    font-size: 1.65em;
     text-align: center;
 }
 
-/** Links */
+/* Links */
 a {
     color: blue;
     text-decoration: none;
@@ -26,11 +25,11 @@ a:hover {
     text-decoration: underline;
 }
 
-/** Menu bar */
+/* Menu bar */
 menu-bar {
 }
 .menu-title {
-    font-size: 25px;
+    font-size: 2em;
     text-decoration: none;
     color: black;
 }
@@ -39,9 +38,4 @@ menu-bar {
     margin-right: 75px;
     text-decoration: none;
     color: black;
-}
-
-/** Wrapper */
-.wrapper {
-    
 }
