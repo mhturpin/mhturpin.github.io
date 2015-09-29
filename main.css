@@ -42,6 +42,14 @@ a:hover {
     img {
         max-width: 50vw;
     }
+
+    .menu-title {
+        padding-right: 5px;
+    }
+
+    .menu-links {
+        padding-right: 30px;
+    }
 }
 
 
