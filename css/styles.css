@@ -1,0 +1,11 @@
+.hidden {
+  display: none;
+}
+
+img {
+  max-width: 200px;
+}
+
+hr {
+  margin-top: 30px;
+}
