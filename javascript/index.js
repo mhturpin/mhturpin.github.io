@@ -24,8 +24,11 @@ function diff(data1, data2) {
 }
 
 function encodeFileInImage() {
+  document.getElementById('processing').classList.remove('hidden');
+
   let hiddenFile = document.getElementById('hidden-file').files[0];
   let hostImage = document.getElementById('host-image').files[0];
+
   if (!hiddenFile || !hostImage) {
     alert('Please upload both files');
   }
@@ -119,6 +122,8 @@ function getLastBit(value) {
 }
 
 function decodeFileFromImage() {
+  document.getElementById('processing').classList.remove('hidden');
+
   processFileAsBase64(document.getElementById('image-with-file').files[0], (base64Host) => {
     let binaryString = '';
     let imageData = base64ToImageData(base64Host);
@@ -157,7 +162,8 @@ function showDowloadButton(id, name, base64) {
   button.onclick = () => downloadFile(name, base64);
   button.disabled = false;
 
-  message = button.nextElementSibling;
+  document.getElementById('processing').classList.add('hidden');
+  message = document.getElementById('download-ready');
   message.classList.remove('hidden');
   setTimeout(() => message.classList.add('hidden'), 1000);
 }
