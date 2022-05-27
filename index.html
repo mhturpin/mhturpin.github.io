@@ -2,40 +2,46 @@
 <html>
   <head>
     <title>Steganography</title>
-    <script type='text/javascript' src='javascript/index.js'></script>
-    <link rel='stylesheet' href='css/styles.css'>
+    <script type="text/javascript" src="javascript/index.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
     <h2>Hide file in image</h2>
     <div>
-      <label for='hidden-file'>Select a file to hide:</label>
-      <input type='file' id='hidden-file' name='hidden-file'>
+      <label for="hidden-file">Select a file to hide:</label>
+      <input type="file" id="hidden-file" name="hidden-file">
     </div>
     <div>
-      <label for='host-image'>Select an image (png format) to hide file in:</label>
-      <input type='file' id='host-image' name='host-image'>
-      <img id='host-image-preview'/>
+      <label for="host-image">Select an image to hide file in:</label>
+      <div class="image-preview">
+        <input type="file" id="host-image" name="host-image">
+        <img id="host-image-preview"/>
+      </div>
     </div>
 
     <div>
-      <button id='encode-file'>Encode File</button>
-    </div>
-    <div>
-      <button id='encoded-file-download' class='hidden'>Download Encoded File</button>
+      <button id="encode-file">Encode File</button>
+      <button id="encoded-file-download" class="download-btn" disabled>Download Encoded File</button>
+      <div class="hidden">File ready to download</div>
     </div>
     <hr/>
 
     <h2>Retrieve file from image</h2>
     <div>
-      <label for='image-with-file'>Select an image to extract file from:</label>
-      <input type='file' id='image-with-file' name='image-with-file'>
-      <img id='image-with-file-preview'/>
+      <label for="image-with-file">Select an image to extract file from:</label>
+
+
+      <div class="image-preview">
+        <input type="file" id="image-with-file" name="image-with-file">
+        <img id="image-with-file-preview"/>
+      </div>
+
+
     </div>
     <div>
-      <button id='decode-file'>Decode File</button>
-    </div>
-    <div>
-      <button id='decoded-file-download' class='hidden'>Download Decoded File</button>
+      <button id="decode-file">Decode File</button>
+      <button id="decoded-file-download" class="download-btn" disabled>Download Decoded File</button>
+      <div class="hidden">File ready to download</div>
     </div>
 
   </body>

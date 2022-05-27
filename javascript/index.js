@@ -1,5 +1,6 @@
 window.addEventListener('load', () => {
   document.getElementById('host-image').addEventListener('change', () => previewImage('host-image'));
+  document.querySelector('input').addEventListener('change', disableButtons);
   document.getElementById('image-with-file').addEventListener('change', () => previewImage('image-with-file'));
   document.getElementById('encode-file').addEventListener('click', encodeFileInImage);
   document.getElementById('decode-file').addEventListener('click', decodeFileFromImage);
@@ -7,6 +8,7 @@ window.addEventListener('load', () => {
   const e = new Event('change');
   document.getElementById('host-image').dispatchEvent(e);
   document.getElementById('image-with-file').dispatchEvent(e);
+  disableButtons();
 });
 
 function diff(data1, data2) {
@@ -22,8 +24,14 @@ function diff(data1, data2) {
 }
 
 function encodeFileInImage() {
-  processFileAsBase64(document.getElementById('hidden-file').files[0], (base64ToHide) => {
-    processFileAsBase64(document.getElementById('host-image').files[0], (base64Host) => {
+  let hiddenFile = document.getElementById('hidden-file').files[0];
+  let hostImage = document.getElementById('host-image').files[0];
+  if (!hiddenFile || !hostImage) {
+    alert('Please upload both files');
+  }
+
+  processFileAsBase64(hiddenFile, (base64ToHide) => {
+    processFileAsBase64(hostImage, (base64Host) => {
       let imageData = base64ToImageData(base64Host);
       let fileName = document.getElementById('hidden-file').files[0].name;
       let fileNameLength = String.fromCharCode(fileName.length);
@@ -147,7 +155,11 @@ function binaryToBase64(binaryString) {
 function showDowloadButton(id, name, base64) {
   let button = document.getElementById(id);
   button.onclick = () => downloadFile(name, base64);
-  button.classList.remove('hidden');
+  button.disabled = false;
+
+  message = button.nextElementSibling;
+  message.classList.remove('hidden');
+  setTimeout(() => message.classList.add('hidden'), 1000);
 }
 
 function downloadFile(name, base64) {
@@ -163,4 +175,8 @@ function previewImage(id) {
   processFileAsBase64(document.getElementById(id).files[0], (base64) => {
     document.getElementById(id + '-preview').src = base64;
   });
+}
+
+function disableButtons() {
+  Array.from(document.getElementsByClassName('download-btn')).forEach(e => e.disabled = true);
 }
