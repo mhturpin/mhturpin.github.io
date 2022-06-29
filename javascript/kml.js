@@ -1,20 +1,20 @@
 window.addEventListener('load', () => {
-  document.getElementById('geojson-file').addEventListener('change', processGeojson);
-
-  const e = new Event('change');
-  document.getElementById('geojson-file').dispatchEvent(e);
+  document.getElementById('geojson-file').addEventListener('change', clearErrors);
+  document.getElementById('geojson-file').addEventListener('change', showConvertButton);
+  document.getElementById('convert-file').addEventListener('click', processGeojson);
 });
 
 function processGeojson() {
-  let fileName = this.files[0].name;
+  let file = document.getElementById('geojson-file').files[0];
+  let fileName = file.name;
 
-  this.files[0].text().then(function(t) {
+  file.text().then(function(t) {
     let inputJson = JSON.parse(t);
     let contents = inputJson['features'].map(f => createPlacemark(f)).join(''); // Convert all the features
     let kmlDoc = createKmlDoc(contents);
     let kmlDocString = new XMLSerializer().serializeToString(kmlDoc);
 
-    downloadFile(fileName.replace('.geojson', '.kml'), kmlDocString);
+    showDowloadButton(fileName.replace('.geojson', '.kml'), kmlDocString);
   });
 }
 
@@ -101,6 +101,21 @@ function downloadFile(name, contents) {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+}
+
+function clearErrors() {
+  document.getElementById('errors').innerHTML = '';
+}
+
+function showConvertButton() {
+  document.getElementById('converted-file-download').disabled = true;
+  document.getElementById('convert-file').disabled = false;
+}
+
+function showDowloadButton(name, contents) {
+  let button = document.getElementById('converted-file-download');
+  button.onclick = () => downloadFile(name, contents);
+  button.disabled = false;
 }
 
 
