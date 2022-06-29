@@ -1,46 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Steganography</title>
-    <script type="text/javascript" src="javascript/index.js"></script>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>Index</title>
   </head>
   <body>
-    <h2>Hide file in image</h2>
     <div>
-      <label for="hidden-file">Select a file to hide:</label>
-      <input type="file" id="hidden-file" name="hidden-file">
+      <a href="steganography.html">Steganography</a>
     </div>
-
     <div>
-      <label for="host-image">Select an image to hide file in:</label>
-      <div class="image-preview">
-        <input type="file" id="host-image" name="host-image">
-        <img id="host-image-preview"/>
-      </div>
+      <a href="kml-editor.html">KML Editor</a>
     </div>
-
-    <div>
-      <button id="encode-file">Encode File</button>
-      <button id="encoded-file-download" class="download-btn" disabled>Download Encoded File</button>
-    </div>
-    <hr/>
-
-    <h2>Retrieve file from image</h2>
-    <div>
-      <label for="image-with-file">Select an image to extract file from:</label>
-      <div class="image-preview">
-        <input type="file" id="image-with-file" name="image-with-file">
-        <img id="image-with-file-preview"/>
-      </div>
-    </div>
-
-    <div>
-      <button id="decode-file">Decode File</button>
-      <button id="decoded-file-download" class="download-btn" disabled>Download Decoded File</button>
-    </div>
-
-    <div id="processing" class="hidden">Processing...</div>
-    <div id="download-ready" class="hidden">File ready to download</div>
   </body>
 </html>
