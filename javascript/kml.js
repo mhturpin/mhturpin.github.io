@@ -1,9 +1,11 @@
 window.addEventListener('load', () => {
   document.getElementById('geojson-file').addEventListener('change', clearErrors);
   document.getElementById('geojson-file').addEventListener('change', toggleConvertButton);
+  document.getElementById('geojson-file').addEventListener('change', showNameSelection);
   document.getElementById('convert-file').addEventListener('click', processGeojson);
 
   toggleConvertButton();
+  showNameSelection();
 });
 
 function processGeojson() {
@@ -45,11 +47,14 @@ function createKmlDoc(contents) {
 function createPlacemark(feature) {
   let props = feature['properties'];
   let contents = '';
+  let name = document.querySelector('input[name="placemark-name"]:checked').value;
 
   if (feature['geometry']['type'] === 'Polygon') {
     contents = createPolygon(feature['geometry']['coordinates'], props['ZONE']);
   } else if (feature['geometry']['type'] === 'MultiPolygon') {
     contents = createMultiGeometry(feature['geometry']['coordinates']);
+  } else if (feature['geometry']['type'] === 'Point') {
+    contents = createPoint(feature['geometry']['coordinates']);
   } else {
     let p = window.document.createElement('p');
     p.textContent = `Unrecognized feature of type ${feature['geometry']['type']}`;
@@ -65,7 +70,7 @@ function createPlacemark(feature) {
   return `
     <Placemark>
       ${style}
-      <name>${props['ZONE']}</name>
+      <name><![CDATA[${props[name]}]]></name>
       <description>
         <![CDATA[
           <h1>Properties:</h1>
@@ -115,6 +120,16 @@ function createMultiGeometry(coordinates) {
     <MultiGeometry>
       ${coordinates.map(polygon => createPolygon(polygon)).join('')}
     </MultiGeometry>
+  `;
+}
+
+function createPoint(coordinates) {
+  return `
+    <Point>
+      <coordinates>
+        ${coordinates.join(',')},0
+      </coordinates>
+    </Point>
   `;
 }
 
@@ -191,6 +206,40 @@ function showDowloadButton(name, contents) {
   let button = document.getElementById('converted-file-download');
   button.onclick = () => downloadFile(name, contents);
   button.disabled = false;
+}
+
+function showNameSelection() {
+  let file = document.getElementById('geojson-file').files[0];
+
+  if (file) {
+    file.text().then(function(t) {
+      let inputJson = JSON.parse(t);
+      let keys = Object.keys(inputJson['features'][0]['properties']);
+
+      keys.forEach(function(k) {
+        createRadioButton(k);
+      })
+    });
+
+    document.getElementById('select-name').classList.remove('hidden');
+  }
+}
+
+function createRadioButton(value) {
+  let parent = document.getElementById('select-name');
+  let input = document.createElement('input');
+  input.type = 'radio';
+  input.id = `property-${value}`;
+  input.value = value;
+  input.name = 'placemark-name';
+  parent.appendChild(input);
+
+  let label = document.createElement('label');
+  label.for = `property-${value}`;
+  label.textContent = value;
+  parent.appendChild(label);
+
+  parent.appendChild(document.createElement('br'));
 }
 
 // let placemark = kmlDoc.createElement('Placemark');
