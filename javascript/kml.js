@@ -1,256 +1,117 @@
-window.addEventListener('load', () => {
-  document.getElementById('geojson-file').addEventListener('change', clearErrors);
-  document.getElementById('geojson-file').addEventListener('change', toggleConvertButton);
-  document.getElementById('geojson-file').addEventListener('change', showNameSelection);
-  document.getElementById('convert-file').addEventListener('click', processGeojson);
-
-  toggleConvertButton();
-  showNameSelection();
-});
-
-function processGeojson() {
-  let file = document.getElementById('geojson-file').files[0];
-  let fileName = file.name;
-
-  file.text().then(function(t) {
-    let inputJson = JSON.parse(t);
-    let contents = inputJson['features'].map(f => createPlacemark(f)).join(''); // Convert all the features
-    let kmlDoc = createKmlDoc(contents);
-    let kmlDocString = new XMLSerializer().serializeToString(kmlDoc);
-
-    showDowloadButton(fileName.replace('.geojson', '.kml'), kmlDocString);
-  });
-}
-
-function createKmlDoc(contents) {
-  let styles = '';
-
-  if (document.getElementById('include-zone-colors').checked) {
-    styles = createZoneColorStyles();
+class Kml {
+  constructor() {
+    let kmlString = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document></Document></kml>';
+    let parser = new DOMParser();
+    this.kmlDoc = parser.parseFromString(kmlString, 'text/xml');
   }
 
-  let kmlString = `<?xml version="1.0" encoding="UTF-8"?>
-    <kml xmlns="http://www.opengis.net/kml/2.2">
-      <Document>
-        ${styles}
-        ${contents}
-      </Document>
-    </kml>
-  `;
-
-  let parser = new DOMParser();
-  return parser.parseFromString(kmlString, 'text/xml');
-}
-
-// https://datatracker.ietf.org/doc/html/rfc7946
-// Possible types: Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection, Feature, FeatureCollection
-function createPlacemark(feature) {
-  let props = feature['properties'];
-  let contents = '';
-  let name = document.querySelector('input[name="placemark-name"]:checked').value;
-
-  if (feature['geometry']['type'] === 'Polygon') {
-    contents = createPolygon(feature['geometry']['coordinates'], props['ZONE']);
-  } else if (feature['geometry']['type'] === 'MultiPolygon') {
-    contents = createMultiGeometry(feature['geometry']['coordinates']);
-  } else if (feature['geometry']['type'] === 'Point') {
-    contents = createPoint(feature['geometry']['coordinates']);
-  } else {
-    let p = window.document.createElement('p');
-    p.textContent = `Unrecognized feature of type ${feature['geometry']['type']}`;
-    document.getElementById('errors').appendChild(p);
+  importFromGeoJson(geoJson, nameField) {
+    geoJson['features'].map(f => this.addPlacemark(f, nameField));
   }
 
-  let style = '';
+  // https://datatracker.ietf.org/doc/html/rfc7946
+  // Possible types: Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection, Feature, FeatureCollection
+  addPlacemark(feature, nameField) {
+    let placemark = this.kmlDoc.createElement('Placemark');
+    let props = feature['properties'];
+    let coordinates = feature['geometry']['coordinates'];
+    let type = feature['geometry']['type'];
 
-  if (document.getElementById('include-zone-colors').checked) {
-    style = `<styleUrl>#${props['ZONE']}Color</styleUrl>`;
-  }
+    let name = this.kmlDoc.createElement('name');
+    name.appendChild(this.kmlDoc.createCDATASection(props[nameField]));
+    placemark.appendChild(name);
 
-  return `
-    <Placemark>
-      ${style}
-      <name><![CDATA[${props[name]}]]></name>
-      <description>
-        <![CDATA[
-          <h1>Properties:</h1>
-          <ul>
-            ${Object.keys(props).map(k => `<li>${k}: ${props[k]}</li>`)}
-          </ul>
-        ]]>
-      </description>
-      ${contents}
-    </Placemark>
-  `;
-}
-
-function createPolygon(coordinates) {
-  let innerBoundaries = '';
-
-  if (coordinates.slice(1).length > 0) {
-    innerBoundaries = `
-      <innerBoundaryIs>
-        ${coordinates.slice(1).map(ring => createLinearRing(ring)).join('</innerBoundaryIs><innerBoundaryIs>')}
-      </innerBoundaryIs>
+    let desc = this.kmlDoc.createElement('description');
+    let description = `
+      <h1>Properties:</h1>
+      <ul>
+        ${Object.keys(props).map(k => `<li>${k}: ${props[k]}</li>`).join('')}
+      </ul>
     `;
+    desc.appendChild(this.kmlDoc.createCDATASection(description))
+    placemark.appendChild(desc);
+
+    if (props['styleId']) {
+      let styleUrl = this.kmlDoc.createElement('styleUrl');
+      styleUrl.textContent = '#' + props['styleId'];
+      placemark.appendChild(styleUrl);
+    }
+
+    if (type === 'Polygon') {
+      placemark.appendChild(this.createPolygon(coordinates));
+    } else if (type === 'MultiPolygon') {
+      placemark.appendChild(this.createMultiGeometry(coordinates));
+    } else if (type === 'Point') {
+      placemark.appendChild(this.createPoint(coordinates));
+    } else {
+      console.log(`Unrecognized feature of type ${type}`);
+    }
+
+    this.kmlDoc.getElementsByTagName('Document')[0].appendChild(placemark);
   }
 
-  return `
-    <Polygon>
-      <outerBoundaryIs>
-        ${createLinearRing(coordinates[0])}
-      </outerBoundaryIs>
-      ${innerBoundaries}
-    </Polygon>
-  `;
-}
+  createPolygon(coordinates) {
+    let polygon = this.kmlDoc.createElement('Polygon');
+    let outerBoundaryIs = this.kmlDoc.createElement('outerBoundaryIs');
 
-function createLinearRing(coordinates) {
-  return `
-    <LinearRing>
-      <coordinates>
-        ${coordinates.map(pair => pair.join() + ',0').join('\n')}
-      </coordinates>
-    </LinearRing>
-  `;
-}
+    outerBoundaryIs.appendChild(this.createLinearRing(coordinates[0]));
+    polygon.appendChild(outerBoundaryIs);
 
-function createMultiGeometry(coordinates) {
-  return `
-    <MultiGeometry>
-      ${coordinates.map(polygon => createPolygon(polygon)).join('')}
-    </MultiGeometry>
-  `;
-}
+    // Any rings after the first are inner boundaries
+    if (coordinates.slice(1).length > 0) {
+      // Skip the first ring
+      coordinates.slice(1).forEach(ring => {
+        let innerBoundaryIs = this.kmlDoc.createElement('innerBoundaryIs');
+        innerBoundaryIs.appendChild(this.createLinearRing(ring));
+        polygon.appendChild(innerBoundaryIs);
+      });
+    }
 
-function createPoint(coordinates) {
-  return `
-    <Point>
-      <coordinates>
-        ${coordinates.join(',')},0
-      </coordinates>
-    </Point>
-  `;
-}
-
-// USDA Zone Colors
-// https://pdi.scinet.usda.gov/phzm/md/All_states_halfzones_poster_rgb_300dpi.pdf
-function createZoneColorStyles() {
-  let zoneColors = {
-    '1aColor': '80ffd6d7',
-    '1bColor': '80f2c4c4',
-    '2aColor': '80d9abab',
-    '2bColor': '80ebb0eb',
-    '3aColor': '80eb91e0',
-    '3bColor': '80db7dcf',
-    '4aColor': '80ff6ba8',
-    '4bColor': '80ed755b',
-    '5aColor': '80ffa173',
-    '5bColor': '80e0c95d',
-    '6aColor': '8046ba48',
-    '6bColor': '8056c777',
-    '7aColor': '8069d6ad',
-    '7bColor': '8070dbcf',
-    '8aColor': '8085daed',
-    '8bColor': '8057cbeb',
-    '9aColor': '804fb6dc',
-    '9bColor': '8078b6f4',
-    '10aColor': '80369bec',
-    '10bColor': '801f78e6',
-    '11aColor': '801e56e6',
-    '11bColor': '806485e8',
-    '12aColor': '804e62d4',
-    '12bColor': '802850b4',
-    '13aColor': '802e6fab',
-    '13bColor': '805d91c4'
+    return polygon;
   }
 
-  return Object.keys(zoneColors).map(id => createColorStyle(id, zoneColors[id])).join('');
-}
+  createLinearRing(coordinates) {
+    let linearRing = this.kmlDoc.createElement('LinearRing');
+    let coords = this.kmlDoc.createElement('coordinates');
 
-function createColorStyle(id, color) {
-  return `
-    <Style id="${id}">
-      <PolyStyle>
-        <color>${color}</color>
-      </PolyStyle>
-    </Style>
-  `;
-}
+    coords.textContent = coordinates.map(pair => pair.join()).join('\n');
+    linearRing.appendChild(coords);
 
-function downloadFile(name, contents) {
-  let blob = new Blob([contents], {type: 'text/plain'});
-  let a = document.createElement('a');
-  a.href = window.URL.createObjectURL(blob);
-  a.download = name;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
-
-function clearErrors() {
-  document.getElementById('errors').innerHTML = '';
-}
-
-function toggleConvertButton() {
-  if (document.getElementById('geojson-file').files[0]) {
-    document.getElementById('convert-file').disabled = false;
-  } else {
-    document.getElementById('convert-file').disabled = true;
+    return linearRing;
   }
 
-  document.getElementById('converted-file-download').disabled = true;
-}
+  createMultiGeometry(coordinates) {
+    let multiGeometry = this.kmlDoc.createElement('MultiGeometry');
 
-function showDowloadButton(name, contents) {
-  let button = document.getElementById('converted-file-download');
-  button.onclick = () => downloadFile(name, contents);
-  button.disabled = false;
-}
+    coordinates.forEach(polygon => multiGeometry.appendChild(this.createPolygon(polygon)));
 
-function showNameSelection() {
-  let file = document.getElementById('geojson-file').files[0];
+    return multiGeometry;
+  }
 
-  if (file) {
-    file.text().then(function(t) {
-      let inputJson = JSON.parse(t);
-      let keys = Object.keys(inputJson['features'][0]['properties']);
+  createPoint(coordinates) {
+    let point = this.kmlDoc.createElement('Point');
+    let coords = this.kmlDoc.createElement('coordinates');
 
-      keys.forEach(function(k) {
-        createRadioButton(k);
-      })
-    });
+    coords.textContent = coordinates.join();
+    point.appendChild(coords);
 
-    document.getElementById('select-name').classList.remove('hidden');
+    return point;
+  }
+
+  addColorStyle(id, color) {
+    let style = this.kmlDoc.createElement('Style');
+    style.id = id;
+
+    let polyStyle = this.kmlDoc.createElement('PolyStyle');
+    let col = this.kmlDoc.createElement('color');
+    col.textContent = color;
+
+    polyStyle.appendChild(col);
+    style.appendChild(polyStyle);
+    this.kmlDoc.getElementsByTagName('Document')[0].appendChild(style);
+  }
+
+  toString() {
+    return new XMLSerializer().serializeToString(this.kmlDoc);
   }
 }
-
-function createRadioButton(value) {
-  let parent = document.getElementById('select-name');
-  let input = document.createElement('input');
-  input.type = 'radio';
-  input.id = `property-${value}`;
-  input.value = value;
-  input.name = 'placemark-name';
-  parent.appendChild(input);
-
-  let label = document.createElement('label');
-  label.for = `property-${value}`;
-  label.textContent = value;
-  parent.appendChild(label);
-
-  parent.appendChild(document.createElement('br'));
-}
-
-// let placemark = kmlDoc.createElement('Placemark');
-// let polygon = kmlDoc.createElement('Polygon');
-// let outerBoundaryIs = kmlDoc.createElement('outerBoundaryIs');
-// let linearRing = kmlDoc.createElement('LinearRing');
-// let coordinates = kmlDoc.createElement('coordinates');
-
-// coordinates.textContent = feature['geometry']['coordinates'][0].map(pair => pair.join()).join('\n');
-
-// linearRing.appendChild(coordinates);
-// outerBoundaryIs.appendChild(linearRing);
-// polygon.appendChild(outerBoundaryIs);
-// placemark.appendChild(polygon);
