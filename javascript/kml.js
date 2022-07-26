@@ -1,8 +1,11 @@
 class Kml {
+
+  #kmlDoc;
+
   constructor() {
     let kmlString = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document></Document></kml>';
     let parser = new DOMParser();
-    this.kmlDoc = parser.parseFromString(kmlString, 'text/xml');
+    this.#kmlDoc = parser.parseFromString(kmlString, 'text/xml');
   }
 
   importFromGeoJson(geoJson, nameField) {
@@ -10,29 +13,24 @@ class Kml {
   }
 
   // https://datatracker.ietf.org/doc/html/rfc7946
-  // Possible types: Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection, Feature, FeatureCollection
+  // Possible geometry types: Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, and GeometryCollection.
   addPlacemark(feature, nameField) {
-    let placemark = this.kmlDoc.createElement('Placemark');
+    let placemark = this.#kmlDoc.createElement('Placemark');
     let props = feature['properties'];
     let coordinates = feature['geometry']['coordinates'];
     let type = feature['geometry']['type'];
 
-    let name = this.kmlDoc.createElement('name');
-    name.appendChild(this.kmlDoc.createCDATASection(props[nameField]));
+    let name = this.#kmlDoc.createElement('name');
+    name.appendChild(this.#kmlDoc.createCDATASection(props[nameField]));
     placemark.appendChild(name);
 
-    let desc = this.kmlDoc.createElement('description');
-    let description = `
-      <h1>Properties:</h1>
-      <ul>
-        ${Object.keys(props).map(k => `<li>${k}: ${props[k]}</li>`).join('')}
-      </ul>
-    `;
-    desc.appendChild(this.kmlDoc.createCDATASection(description))
+    let desc = this.#kmlDoc.createElement('description');
+    let description = `<h1>Properties:</h1>\n<ul>\n${Object.keys(props).map(k => `<li>${k}: ${props[k]}</li>`).join('\n')}\n</ul>`;
+    desc.appendChild(this.#kmlDoc.createCDATASection(description))
     placemark.appendChild(desc);
 
     if (props['styleId']) {
-      let styleUrl = this.kmlDoc.createElement('styleUrl');
+      let styleUrl = this.#kmlDoc.createElement('styleUrl');
       styleUrl.textContent = '#' + props['styleId'];
       placemark.appendChild(styleUrl);
     }
@@ -47,12 +45,12 @@ class Kml {
       console.log(`Unrecognized feature of type ${type}`);
     }
 
-    this.kmlDoc.getElementsByTagName('Document')[0].appendChild(placemark);
+    this.#kmlDoc.getElementsByTagName('Document')[0].appendChild(placemark);
   }
 
   createPolygon(coordinates) {
-    let polygon = this.kmlDoc.createElement('Polygon');
-    let outerBoundaryIs = this.kmlDoc.createElement('outerBoundaryIs');
+    let polygon = this.#kmlDoc.createElement('Polygon');
+    let outerBoundaryIs = this.#kmlDoc.createElement('outerBoundaryIs');
 
     outerBoundaryIs.appendChild(this.createLinearRing(coordinates[0]));
     polygon.appendChild(outerBoundaryIs);
@@ -61,7 +59,7 @@ class Kml {
     if (coordinates.slice(1).length > 0) {
       // Skip the first ring
       coordinates.slice(1).forEach(ring => {
-        let innerBoundaryIs = this.kmlDoc.createElement('innerBoundaryIs');
+        let innerBoundaryIs = this.#kmlDoc.createElement('innerBoundaryIs');
         innerBoundaryIs.appendChild(this.createLinearRing(ring));
         polygon.appendChild(innerBoundaryIs);
       });
@@ -71,8 +69,8 @@ class Kml {
   }
 
   createLinearRing(coordinates) {
-    let linearRing = this.kmlDoc.createElement('LinearRing');
-    let coords = this.kmlDoc.createElement('coordinates');
+    let linearRing = this.#kmlDoc.createElement('LinearRing');
+    let coords = this.#kmlDoc.createElement('coordinates');
 
     coords.textContent = coordinates.map(pair => pair.join()).join('\n');
     linearRing.appendChild(coords);
@@ -81,7 +79,7 @@ class Kml {
   }
 
   createMultiGeometry(coordinates) {
-    let multiGeometry = this.kmlDoc.createElement('MultiGeometry');
+    let multiGeometry = this.#kmlDoc.createElement('MultiGeometry');
 
     coordinates.forEach(polygon => multiGeometry.appendChild(this.createPolygon(polygon)));
 
@@ -89,8 +87,8 @@ class Kml {
   }
 
   createPoint(coordinates) {
-    let point = this.kmlDoc.createElement('Point');
-    let coords = this.kmlDoc.createElement('coordinates');
+    let point = this.#kmlDoc.createElement('Point');
+    let coords = this.#kmlDoc.createElement('coordinates');
 
     coords.textContent = coordinates.join();
     point.appendChild(coords);
@@ -99,19 +97,51 @@ class Kml {
   }
 
   addColorStyle(id, color) {
-    let style = this.kmlDoc.createElement('Style');
+    let style = this.#kmlDoc.createElement('Style');
     style.id = id;
 
-    let polyStyle = this.kmlDoc.createElement('PolyStyle');
-    let col = this.kmlDoc.createElement('color');
+    let polyStyle = this.#kmlDoc.createElement('PolyStyle');
+    let col = this.#kmlDoc.createElement('color');
     col.textContent = color;
 
     polyStyle.appendChild(col);
     style.appendChild(polyStyle);
-    this.kmlDoc.getElementsByTagName('Document')[0].appendChild(style);
+    this.#kmlDoc.getElementsByTagName('Document')[0].appendChild(style);
   }
 
   toString() {
-    return new XMLSerializer().serializeToString(this.kmlDoc);
+    return new XMLSerializer().serializeToString(this.#kmlDoc);
+  }
+
+  toHtml() {
+    let div = document.createElement('div');
+
+    [...this.#kmlDoc.getElementsByTagName('Placemark')].forEach(e => {
+      div.appendChild(this.placemarkToHtml(e));
+    });
+
+    return div;
+  }
+
+  placemarkToHtml(placemark) {
+    let div = document.createElement('div');
+
+    let h3 = document.createElement('h3');
+    h3.textContent = placemark.lastChild.nodeName;
+    div.appendChild(h3);
+
+    let name = document.createElement('input');
+    name.value = placemark.getElementsByTagName('name')[0].textContent;
+    div.appendChild(name);
+
+    div.appendChild(document.createElement('br'));
+
+    let description = document.createElement('textarea');
+    description.rows = 10;
+    description.cols = 80;
+    description.value = placemark.getElementsByTagName('description')[0].textContent;
+    div.appendChild(description);
+
+    return div;
   }
 }
