@@ -1,5 +1,4 @@
 class Kml {
-
   #kmlDoc;
 
   constructor() {
@@ -43,6 +42,7 @@ class Kml {
       placemark.appendChild(this.createPoint(coordinates));
     } else {
       console.log(`Unrecognized feature of type ${type}`);
+      alert(`Unrecognized feature of type ${type}`);
     }
 
     this.#kmlDoc.getElementsByTagName('Document')[0].appendChild(placemark);
@@ -56,7 +56,7 @@ class Kml {
     polygon.appendChild(outerBoundaryIs);
 
     // Any rings after the first are inner boundaries
-    if (coordinates.slice(1).length > 0) {
+    if (coordinates.length > 1) {
       // Skip the first ring
       coordinates.slice(1).forEach(ring => {
         let innerBoundaryIs = this.#kmlDoc.createElement('innerBoundaryIs');
@@ -145,3 +145,5 @@ class Kml {
     return div;
   }
 }
+
+export default Kml
