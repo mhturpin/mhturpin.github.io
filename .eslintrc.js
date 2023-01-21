@@ -17,12 +17,13 @@ module.exports = {
     'react',
   ],
   rules: {
-    'react/jsx-filename-extension': ['error', { 'extensions': ['.js', '.jsx'] }],
+    'comma-dangle': 'off',
     'jsx-quotes': ['error', 'prefer-single'],
-    'react/react-in-jsx-scope': 'off',
     'max-len': 'off',
-    'react/destructuring-assignment': 'off',
     'prefer-destructuring': 'off',
-    'comma-dangle': 'off'
+    'react/destructuring-assignment': 'off',
+    'react/forbid-prop-types': 'off',
+    'react/jsx-filename-extension': ['error', { 'extensions': ['.js', '.jsx'] }],
+    'react/react-in-jsx-scope': 'off',
   },
 };

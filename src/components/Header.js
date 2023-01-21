@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 function Header(props) {
@@ -8,5 +9,9 @@ function Header(props) {
     </header>
   );
 }
+
+Header.propTypes = {
+  currentPage: PropTypes.string.isRequired,
+};
 
 export default Header;

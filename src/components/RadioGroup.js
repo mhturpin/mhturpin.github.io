@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 function RadioGroup(props) {
   return (
     <div id={props.id} onChange={props.onChange}>
@@ -15,5 +17,12 @@ function RadioGroup(props) {
     </div>
   );
 }
+
+RadioGroup.propTypes = {
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  options: PropTypes.array.isRequired,
+};
 
 export default RadioGroup;

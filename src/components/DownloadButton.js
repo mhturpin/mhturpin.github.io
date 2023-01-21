@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 function DownloadButton(props) {
   return (
     <div className={props.className}>
@@ -5,5 +7,11 @@ function DownloadButton(props) {
     </div>
   );
 }
+
+DownloadButton.propTypes = {
+  className: PropTypes.string.isRequired,
+  fileContents: PropTypes.string.isRequired,
+  fileName: PropTypes.string.isRequired,
+};
 
 export default DownloadButton;

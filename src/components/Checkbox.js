@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 function Checkbox(props) {
   return (
     <div>
@@ -6,5 +8,10 @@ function Checkbox(props) {
     </div>
   );
 }
+
+Checkbox.propTypes = {
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+};
 
 export default Checkbox;
