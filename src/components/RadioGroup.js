@@ -2,15 +2,15 @@ function RadioGroup(props) {
   return (
     <div id={props.id} onChange={props.onChange}>
       <span>{props.label}</span>
-      <br/>
+      <br />
 
-      {props.options.map((option) =>
+      {props.options.map((option) => (
         <div key={option}>
-          <input type='radio' id={`property-${option}`} value={option} name='placemark-name'/>
+          <input type='radio' id={`property-${option}`} value={option} name='placemark-name' />
           <label htmlFor={`property-${option}`}>{option}</label>
-          <br/>
+          <br />
         </div>
-      )}
+      ))}
 
     </div>
   );

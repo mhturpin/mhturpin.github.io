@@ -2,35 +2,35 @@ class Kml {
   #kmlDoc;
 
   constructor() {
-    let kmlString = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document></Document></kml>';
-    let parser = new DOMParser();
+    const kmlString = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document></Document></kml>';
+    const parser = new DOMParser();
     this.#kmlDoc = parser.parseFromString(kmlString, 'text/xml');
   }
 
   importFromGeoJson(geoJson, nameField) {
-    geoJson['features'].map(f => this.addPlacemark(f, nameField));
+    geoJson.features.map((f) => this.addPlacemark(f, nameField));
   }
 
   // https://datatracker.ietf.org/doc/html/rfc7946
   // Possible geometry types: Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, and GeometryCollection.
   addPlacemark(feature, nameField) {
-    let placemark = this.#kmlDoc.createElement('Placemark');
-    let props = feature['properties'];
-    let coordinates = feature['geometry']['coordinates'];
-    let type = feature['geometry']['type'];
+    const placemark = this.#kmlDoc.createElement('Placemark');
+    const props = feature.properties;
+    const coordinates = feature.geometry.coordinates;
+    const type = feature.geometry.type;
 
-    let name = this.#kmlDoc.createElement('name');
+    const name = this.#kmlDoc.createElement('name');
     name.appendChild(this.#kmlDoc.createCDATASection(props[nameField]));
     placemark.appendChild(name);
 
-    let desc = this.#kmlDoc.createElement('description');
-    let description = `<h1>Properties:</h1>\n<ul>\n${Object.keys(props).map(k => `<li>${k}: ${props[k]}</li>`).join('\n')}\n</ul>`;
-    desc.appendChild(this.#kmlDoc.createCDATASection(description))
-    placemark.appendChild(desc);
+    const description = this.#kmlDoc.createElement('description');
+    const descriptionText = `<h1>Properties:</h1>\n<ul>\n${Object.keys(props).map((k) => `<li>${k}: ${props[k]}</li>`).join('\n')}\n</ul>`;
+    description.appendChild(this.#kmlDoc.createCDATASection(descriptionText));
+    placemark.appendChild(description);
 
-    if (props['styleId']) {
-      let styleUrl = this.#kmlDoc.createElement('styleUrl');
-      styleUrl.textContent = '#' + props['styleId'];
+    if (props.styleId) {
+      const styleUrl = this.#kmlDoc.createElement('styleUrl');
+      styleUrl.textContent = `#${props.styleId}`;
       placemark.appendChild(styleUrl);
     }
 
@@ -49,8 +49,8 @@ class Kml {
   }
 
   createPolygon(coordinates) {
-    let polygon = this.#kmlDoc.createElement('Polygon');
-    let outerBoundaryIs = this.#kmlDoc.createElement('outerBoundaryIs');
+    const polygon = this.#kmlDoc.createElement('Polygon');
+    const outerBoundaryIs = this.#kmlDoc.createElement('outerBoundaryIs');
 
     outerBoundaryIs.appendChild(this.createLinearRing(coordinates[0]));
     polygon.appendChild(outerBoundaryIs);
@@ -58,8 +58,8 @@ class Kml {
     // Any rings after the first are inner boundaries
     if (coordinates.length > 1) {
       // Skip the first ring
-      coordinates.slice(1).forEach(ring => {
-        let innerBoundaryIs = this.#kmlDoc.createElement('innerBoundaryIs');
+      coordinates.slice(1).forEach((ring) => {
+        const innerBoundaryIs = this.#kmlDoc.createElement('innerBoundaryIs');
         innerBoundaryIs.appendChild(this.createLinearRing(ring));
         polygon.appendChild(innerBoundaryIs);
       });
@@ -69,26 +69,26 @@ class Kml {
   }
 
   createLinearRing(coordinates) {
-    let linearRing = this.#kmlDoc.createElement('LinearRing');
-    let coords = this.#kmlDoc.createElement('coordinates');
+    const linearRing = this.#kmlDoc.createElement('LinearRing');
+    const coords = this.#kmlDoc.createElement('coordinates');
 
-    coords.textContent = coordinates.map(pair => pair.join()).join('\n');
+    coords.textContent = coordinates.map((pair) => pair.join()).join('\n');
     linearRing.appendChild(coords);
 
     return linearRing;
   }
 
   createMultiGeometry(coordinates) {
-    let multiGeometry = this.#kmlDoc.createElement('MultiGeometry');
+    const multiGeometry = this.#kmlDoc.createElement('MultiGeometry');
 
-    coordinates.forEach(polygon => multiGeometry.appendChild(this.createPolygon(polygon)));
+    coordinates.forEach((polygon) => multiGeometry.appendChild(this.createPolygon(polygon)));
 
     return multiGeometry;
   }
 
   createPoint(coordinates) {
-    let point = this.#kmlDoc.createElement('Point');
-    let coords = this.#kmlDoc.createElement('coordinates');
+    const point = this.#kmlDoc.createElement('Point');
+    const coords = this.#kmlDoc.createElement('coordinates');
 
     coords.textContent = coordinates.join();
     point.appendChild(coords);
@@ -97,11 +97,11 @@ class Kml {
   }
 
   addColorStyle(id, color) {
-    let style = this.#kmlDoc.createElement('Style');
+    const style = this.#kmlDoc.createElement('Style');
     style.id = id;
 
-    let polyStyle = this.#kmlDoc.createElement('PolyStyle');
-    let col = this.#kmlDoc.createElement('color');
+    const polyStyle = this.#kmlDoc.createElement('PolyStyle');
+    const col = this.#kmlDoc.createElement('color');
     col.textContent = color;
 
     polyStyle.appendChild(col);
@@ -114,9 +114,9 @@ class Kml {
   }
 
   toHtml() {
-    let div = document.createElement('div');
+    const div = document.createElement('div');
 
-    [...this.#kmlDoc.getElementsByTagName('Placemark')].forEach(e => {
+    [...this.#kmlDoc.getElementsByTagName('Placemark')].forEach((e) => {
       div.appendChild(this.placemarkToHtml(e));
     });
 
@@ -124,19 +124,19 @@ class Kml {
   }
 
   placemarkToHtml(placemark) {
-    let div = document.createElement('div');
+    const div = document.createElement('div');
 
-    let h3 = document.createElement('h3');
+    const h3 = document.createElement('h3');
     h3.textContent = placemark.lastChild.nodeName;
     div.appendChild(h3);
 
-    let name = document.createElement('input');
+    const name = document.createElement('input');
     name.value = placemark.getElementsByTagName('name')[0].textContent;
     div.appendChild(name);
 
     div.appendChild(document.createElement('br'));
 
-    let description = document.createElement('textarea');
+    const description = document.createElement('textarea');
     description.rows = 10;
     description.cols = 80;
     description.value = placemark.getElementsByTagName('description')[0].textContent;
@@ -146,4 +146,4 @@ class Kml {
   }
 }
 
-export default Kml
+export default Kml;

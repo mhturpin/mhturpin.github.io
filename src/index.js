@@ -11,9 +11,9 @@ root.render(
   <React.StrictMode>
     <HashRouter>
       <Routes>
-        <Route path='/' element={<KmlGenerator/>} />
-        <Route path='/kml_generator' element={<KmlGenerator/>}/>
-        <Route path='/steganography' element={<Steganography/>}/>
+        <Route path='/' element={<KmlGenerator />} />
+        <Route path='/kml_generator' element={<KmlGenerator />} />
+        <Route path='/steganography' element={<Steganography />} />
       </Routes>
     </HashRouter>
   </React.StrictMode>

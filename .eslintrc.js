@@ -18,7 +18,11 @@ module.exports = {
   ],
   rules: {
     'react/jsx-filename-extension': ['error', { 'extensions': ['.js', '.jsx'] }],
+    'jsx-quotes': ['error', 'prefer-single'],
     'react/react-in-jsx-scope': 'off',
-    'max-len': 'off'
+    'max-len': 'off',
+    'react/destructuring-assignment': 'off',
+    'prefer-destructuring': 'off',
+    'comma-dangle': 'off'
   },
 };
