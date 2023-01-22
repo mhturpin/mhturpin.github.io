@@ -51,13 +51,13 @@ function KmlGenerator() {
       <Header currentPage='kml_generator' />
       <h2>KML Generator</h2>
 
-      <FileUpload id='geojson-file' label='Upload geojson file: ' accept='.geojson' onChange={updateFile} />
+      <FileUpload id='geojson-file' label='Upload Geojson' accept='.geojson' onChange={updateFile} />
 
       <span className={kmlFileName === '' ? 'hidden' : ''}>
         <Checkbox id='include-zone-colors' label='Include styles for USDA plant hardiness zone colors' />
         <RadioGroup id='select-name' label='Select which property to use as the placemark names' options={propertyKeys} onChange={updateNameField} />
         <button type='button' onClick={processGeojson} disabled={nameField === ''}>Convert File to KML</button>
-        <DownloadButton className={kmlFileContents === '' ? 'hidden' : ''} fileName={kmlFileName} fileContents={kmlFileContents} />
+        <DownloadButton className={kmlFileContents === '' ? 'hidden' : ''} fileName={kmlFileName} fileContents={kmlFileContents} label='Download KML' />
       </span>
     </div>
   );

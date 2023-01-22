@@ -30,10 +30,37 @@ header a.current-page {
   text-decoration: underline;
 }
 
-.hidden {
-  display: none;
+div {
+  margin: 15px 0;
 }
 
-div {
+.btn, button {
+  border: 2px solid red;
+  background: red;
+  padding: 10px;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 5px;
+  font-size: 14px;
+  width: fit-content;
+  display: inline-block;
+}
+
+.btn:hover {
+  cursor: pointer !important;
+}
+
+.uploaded-file-name {
   margin: 10px;
+}
+
+.preview {
+  max-width: 200px;
+  display: block;
+  margin: 20px;
+}
+
+.hidden {
+  display: none;
 }

@@ -55,12 +55,12 @@ function Steganography() {
       <Header currentPage='steganography' />
 
       <h2>Steganography</h2>
-      <FileUpload id='file-to-hide' label='Upload a file to hide: ' accept='*' onChange={updateFile} />
-      <FileUpload id='host-image' label='Upload a host image: ' accept='.png,.jpg,.jpeg' onChange={updateImage} />
+      <FileUpload id='file-to-hide' label='Upload a File' accept='*' onChange={updateFile} />
+      <FileUpload id='host-image' label='Upload a Host Image' accept='.png,.jpg,.jpeg' onChange={updateImage} />
       { encodedImageBase64 ? <DownloadButton className='' href={encodedImageBase64} fileName={hostImage.name} label='Download Encoded Image' /> : ''}
 
       <h2>Retrieve file from image</h2>
-      <FileUpload id='image-with-file' label='Upload an image to extract the file from: ' accept='.png' onChange={updateImage} />
+      <FileUpload id='image-with-file' label='Upload an Image' accept='.png' onChange={updateImage} />
       { extractedFile.base64 ? <DownloadButton className='' href={extractedFile.base64} fileName={extractedFile.name} label='Download Extracted File' /> : ''}
     </div>
   );

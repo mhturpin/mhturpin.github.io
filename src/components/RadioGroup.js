@@ -7,11 +7,11 @@ function RadioGroup(props) {
       <br />
 
       {props.options.map((option) => (
-        <div key={option}>
+        <span key={option}>
           <input type='radio' id={`property-${option}`} value={option} name='placemark-name' />
           <label htmlFor={`property-${option}`}>{option}</label>
           <br />
-        </div>
+        </span>
       ))}
 
     </div>

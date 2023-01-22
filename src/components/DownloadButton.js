@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 function DownloadButton(props) {
   return (
     <div className={props.className}>
-      <a href={props.href ? props.href : window.URL.createObjectURL(new Blob([props.fileContents], { type: 'text/plain' }))} download={props.fileName}>{props.label}</a>
+      <a className='btn' href={props.href ? props.href : window.URL.createObjectURL(new Blob([props.fileContents], { type: 'text/plain' }))} download={props.fileName}>{props.label}</a>
     </div>
   );
 }
