@@ -50,6 +50,14 @@ function KmlGenerator() {
     <div>
       <Header currentPage='kml_generator' />
       <h2>KML Generator</h2>
+      <p>
+        KML is an XML language for storing information that can be displayed on a map, such as placemarks or boundaries.
+        This project accepts a geojson file and will convert it to KML.
+        <br />
+        <a href='https://developers.google.com/kml/documentation/kmlreference'>https://developers.google.com/kml/documentation/kmlreference</a>
+        <br />
+        <a href='https://www.ogc.org/standards/kml/'>https://www.ogc.org/standards/kml/</a>
+      </p>
 
       <FileUpload id='geojson-file' label='Upload Geojson' accept='.geojson' onChange={updateFile} />
 

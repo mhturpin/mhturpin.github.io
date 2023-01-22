@@ -55,12 +55,22 @@ function Steganography() {
       <Header currentPage='steganography' />
 
       <h2>Steganography</h2>
-      <FileUpload id='file-to-hide' label='Upload a File' accept='*' onChange={updateFile} />
+      <p>
+        Steganography is the process of hiding information in something else, such that it is not apparent if you are not looking for it.
+        This project hides a file in the least significant bits of an image.
+        Changing the least significant bit of each RGB value of each pixel does not noticeably change the image.
+        The resulting image must be stored in a lossless format, in this case png, because otherwise the pixels are subject to change and the information will be lost.
+        <br />
+        <a href='https://en.wikipedia.org/wiki/Steganography'>https://en.wikipedia.org/wiki/Steganography</a>
+      </p>
+
+      <h3>Hide file in image</h3>
+      <FileUpload id='file-to-hide' label='Upload a File to Hide' accept='*' onChange={updateFile} />
       <FileUpload id='host-image' label='Upload a Host Image' accept='.png,.jpg,.jpeg' onChange={updateImage} />
       { encodedImageBase64 ? <DownloadButton className='' href={encodedImageBase64} fileName={hostImage.name} label='Download Encoded Image' /> : ''}
 
-      <h2>Retrieve file from image</h2>
-      <FileUpload id='image-with-file' label='Upload an Image' accept='.png' onChange={updateImage} />
+      <h3>Retrieve file from image</h3>
+      <FileUpload id='image-with-file' label='Upload an Image with a Hidden File' accept='.png' onChange={updateImage} />
       { extractedFile.base64 ? <DownloadButton className='' href={extractedFile.base64} fileName={extractedFile.name} label='Download Extracted File' /> : ''}
     </div>
   );
