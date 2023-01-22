@@ -19,7 +19,11 @@ module.exports = {
   rules: {
     'comma-dangle': 'off',
     'jsx-quotes': ['error', 'prefer-single'],
+    'lines-between-class-members': 'off',
     'max-len': 'off',
+    'no-bitwise': 'off',
+    'no-plusplus': 'off',
+    'object-shorthand': 'off',
     'prefer-destructuring': 'off',
     'react/destructuring-assignment': 'off',
     'react/forbid-prop-types': 'off',
