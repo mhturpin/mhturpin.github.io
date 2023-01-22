@@ -116,8 +116,8 @@ class Kml {
   toHtml() {
     const div = document.createElement('div');
 
-    [...this.#kmlDoc.getElementsByTagName('Placemark')].forEach((e) => {
-      div.appendChild(this.placemarkToHtml(e));
+    [...this.#kmlDoc.getElementsByTagName('Placemark')].forEach((placemark) => {
+      div.appendChild(this.placemarkToHtml(placemark));
     });
 
     return div;

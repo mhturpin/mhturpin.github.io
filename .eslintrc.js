@@ -17,6 +17,7 @@ module.exports = {
     'react',
   ],
   rules: {
+    'class-methods-use-this': 'off',
     'comma-dangle': 'off',
     'jsx-quotes': ['error', 'prefer-single'],
     'lines-between-class-members': 'off',

@@ -1,25 +1,19 @@
-function getFileContentsAsBase64(file, processor) {
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => processor(e.target.result);
-    reader.readAsDataURL(file);
-  }
-}
-
-function base64ToImageData(base64) {
+function base64ToImageData(base64, callback) {
   const img = document.createElement('img');
   img.src = base64;
 
-  const canvas = document.createElement('canvas');
-  canvas.height = img.height;
-  canvas.width = img.width;
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    canvas.height = img.height;
+    canvas.width = img.width;
 
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(img, 0, 0);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
 
-  // imageData.data is a flattened array of all the pixel values
-  // 4 values represents 1 pixel (r, g, b, a)
-  return ctx.getImageData(0, 0, img.width, img.height);
+    // imageData.data is a flattened array of all the pixel values
+    // 4 values represents 1 pixel (r, g, b, a)
+    callback(ctx.getImageData(0, 0, img.width, img.height));
+  };
 }
 
 function imageDataToBase64(imageData) {
@@ -65,12 +59,28 @@ function getLastBit(value) {
   return value & 1;
 }
 
-function encodeFileInImage(fileToHide, hostImage) {
-  // if (!fileToHide.base64 || !hostImage.base64) {
-  //   return '';
-  // }
+function getFileContentsAsBase64(file, callback) {
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => callback(e.target.result);
+    reader.readAsDataURL(file);
+  }
+}
 
-  const imageData = base64ToImageData(hostImage.base64);
+function getFileAsImageData(file, callback) {
+  getFileContentsAsBase64(file, (base64) => {
+    base64ToImageData(base64, (imageData) => {
+      callback(imageData);
+    });
+  });
+}
+
+function encodeFileInImage(fileToHide, hostImage) {
+  if (!fileToHide.base64 || !hostImage.imageData) {
+    return '';
+  }
+
+  const imageData = hostImage.imageData;
   const fileNameLength = String.fromCharCode(fileToHide.name.length);
   const fileLength = binaryStringToBase64(fileToHide.base64.length.toString(2).padStart(32, 0));
   const numPixels = imageData.width * imageData.height;
@@ -101,10 +111,13 @@ function encodeFileInImage(fileToHide, hostImage) {
 }
 
 function decodeFileFromImage(imageWithFile) {
-  const imageData = base64ToImageData(imageWithFile.base64);
+  if (!imageWithFile.imageData) {
+    return '';
+  }
+
   let binaryString = '';
 
-  imageData.data.forEach((n, i) => {
+  imageWithFile.imageData.data.forEach((n, i) => {
     // Skip alpha channel because data doesn't store properly
     if (i % 4 !== 3) {
       binaryString += getLastBit(n);
@@ -113,11 +126,19 @@ function decodeFileFromImage(imageWithFile) {
 
   const contents = binaryStringToBase64(binaryString);
   const fileNameLength = contents.charCodeAt(0);
-  const fileName = contents.slice(1, fileNameLength + 1);
-  const fileLength = parseInt(base64ToBinaryString(contents.slice(fileNameLength + 1, fileNameLength + 5)), 2);
-  const fileData = contents.slice(fileNameLength + 5);
+  let offset = 1;
+  const fileName = contents.slice(offset, offset + fileNameLength);
+  offset = fileNameLength + 1;
+  const fileLength = parseInt(base64ToBinaryString(contents.slice(offset, offset + 4)), 2);
+  offset = fileNameLength + 5;
+  const fileData = contents.slice(offset, offset + fileLength);
 
   return { name: fileName, base64: fileData };
 }
 
-export { getFileContentsAsBase64, encodeFileInImage, decodeFileFromImage };
+export {
+  getFileContentsAsBase64,
+  getFileAsImageData,
+  encodeFileInImage,
+  decodeFileFromImage
+};
