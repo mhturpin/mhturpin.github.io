@@ -35,7 +35,7 @@ div {
 }
 
 .btn, button {
-  border: 2px solid red;
+  border: none;
   background: red;
   padding: 10px;
   color: white;
@@ -47,8 +47,12 @@ div {
   display: inline-block;
 }
 
-.btn:hover {
-  cursor: pointer !important;
+.btn:hover, button:hover {
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #ff8080;
 }
 
 .uploaded-file-name {
@@ -59,6 +63,10 @@ div {
   max-width: 200px;
   display: block;
   margin: 20px;
+}
+
+.radio-button {
+  margin: 5px;
 }
 
 .hidden {
