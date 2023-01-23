@@ -8,7 +8,7 @@ import {
   getFileAsImageData,
   encodeFileInImage,
   decodeFileFromImage
-} from '../helpers/SteganographyProcessor';
+} from '../helpers/SteganographyUtils';
 
 function Steganography() {
   const [fileToHide, setFileToHide] = useState({ name: '', base64: '' });

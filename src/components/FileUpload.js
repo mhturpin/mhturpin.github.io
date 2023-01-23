@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useCallback, useState } from 'react';
-import { getFileContentsAsBase64 } from '../helpers/SteganographyProcessor';
+import { getFileContentsAsBase64 } from '../helpers/SteganographyUtils';
 
 function FileUpload(props) {
   const [fileName, setFileName] = useState('');
