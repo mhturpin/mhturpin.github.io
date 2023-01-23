@@ -133,6 +133,11 @@ function decodeFileFromImage(imageWithFile) {
   offset = fileNameLength + 5;
   const fileData = contents.slice(offset, offset + fileLength);
 
+  if (!fileName || !fileData) {
+    alert('Image does not appear to contain a file');
+    return '';
+  }
+
   return { name: fileName, base64: fileData };
 }
 
