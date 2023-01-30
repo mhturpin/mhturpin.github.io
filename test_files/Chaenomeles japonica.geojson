@@ -1,1 +1,159 @@
-{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[-93.6180718438514,44.85437034225967]},"properties":{"AccNumQual":"19780339","CommonName":"Japanese Flowering Quince","DisplayPlantName":"<em>Chaenomeles japonica</em>","LocationPlaceName":"Shrub Collections","SourceDisplayNameNew":"Jewell Nurseries, Inc.","FormName":"plant"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-93.61865724063468,44.853894813702965]},"properties":{"AccNumQual":"20080422","CommonName":"Japanese Flowering Quince","DisplayPlantName":"<em>Chaenomeles japonica</em> 'Moned' Super Red<sup>&reg;</sup>","LocationPlaceName":"Shrub Collections","SourceDisplayNameNew":"Monrovia Nursery","FormName":"container"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-93.61863061163615,44.85386799054552]},"properties":{"AccNumQual":"20080421","CommonName":"Japanese Flowering Quince","DisplayPlantName":"<em>Chaenomeles japonica</em> 'Cameao'","LocationPlaceName":"Shrub Collections","SourceDisplayNameNew":"Monrovia Nursery","FormName":"container"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-93.61864188681955,44.85388051523691]},"properties":{"AccNumQual":"20070223","CommonName":"Japanese Flowering Quince","DisplayPlantName":"<em>Chaenomeles speciosa</em> 'Toyo-Nishiki'","LocationPlaceName":"Shrub Collections","SourceDisplayNameNew":"Spring Meadow Nursery, Inc.","FormName":"container"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-93.61865170984699,44.85386696175965]},"properties":{"AccNumQual":"20070224","CommonName":"Japanese Flowering Quince","DisplayPlantName":"<em>Chaenomeles &times superba</em> 'Crimson and Gold'","LocationPlaceName":"Shrub Collections","SourceDisplayNameNew":"Spring Meadow Nursery, Inc.","FormName":"container"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-93.61861926867968,44.853855576318075]},"properties":{"AccNumQual":"20070219","CommonName":"Japanese Flowering Quince","DisplayPlantName":"<em>Chaenomeles speciosa</em> 'Kingishi'","LocationPlaceName":"Shrub Collections","SourceDisplayNameNew":"Spring Meadow Nursery, Inc.","FormName":"container"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-93.61861697136483,44.8538296978267]},"properties":{"AccNumQual":"20070220","CommonName":"Japanese Flowering Quince","DisplayPlantName":"<em>Chaenomeles speciosa</em> 'O Yashima'","LocationPlaceName":"Shrub Collections","SourceDisplayNameNew":"Spring Meadow Nursery, Inc.","FormName":"container"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-93.61860714925265,44.8538427257516]},"properties":{"AccNumQual":"20070217","CommonName":"Japanese Flowering Quince","DisplayPlantName":"<em>Chaenomeles</em> 'Iwai Nishiki'","LocationPlaceName":"Shrub Collections","SourceDisplayNameNew":"Spring Meadow Nursery, Inc.","FormName":"container"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-93.61859319183114,44.853828483208474]},"properties":{"AccNumQual":"20070225","CommonName":"Japanese Flowering Quince","DisplayPlantName":"<em>Chaenomeles &times superba</em> 'Fusion'","LocationPlaceName":"Shrub Collections","SourceDisplayNameNew":"Spring Meadow Nursery, Inc.","FormName":"container"}}]}
+{
+  "type": "FeatureCollection",
+  "features":
+  [
+    {
+      "type": "Feature",
+      "geometry":
+      {
+        "type": "Point",
+        "coordinates": [-93.6180718438514, 44.85437034225967]
+      },
+      "properties":
+      {
+        "AccNumQual": "19780339",
+        "CommonName": "Japanese Flowering Quince",
+        "DisplayPlantName": "<em>Chaenomeles japonica</em>",
+        "LocationPlaceName": "Shrub Collections",
+        "SourceDisplayNameNew": "Jewell Nurseries, Inc.",
+        "FormName": "plant"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry":
+      {
+        "type": "Point",
+        "coordinates": [-93.61865724063468, 44.853894813702965]
+      },
+      "properties":
+      {
+        "AccNumQual": "20080422",
+        "CommonName": "Japanese Flowering Quince",
+        "DisplayPlantName": "<em>Chaenomeles japonica</em> 'Moned' Super Red<sup>&reg;</sup>",
+        "LocationPlaceName": "Shrub Collections",
+        "SourceDisplayNameNew": "Monrovia Nursery",
+        "FormName": "container"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry":
+      {
+        "type": "Point",
+        "coordinates": [-93.61863061163615, 44.85386799054552]
+      },
+      "properties":
+      {
+        "AccNumQual": "20080421",
+        "CommonName": "Japanese Flowering Quince",
+        "DisplayPlantName": "<em>Chaenomeles japonica</em> 'Cameao'",
+        "LocationPlaceName": "Shrub Collections",
+        "SourceDisplayNameNew": "Monrovia Nursery",
+        "FormName": "container"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry":
+      {
+        "type": "Point",
+        "coordinates": [-93.61864188681955, 44.85388051523691]
+      },
+      "properties":
+      {
+        "AccNumQual": "20070223",
+        "CommonName": "Japanese Flowering Quince",
+        "DisplayPlantName": "<em>Chaenomeles speciosa</em> 'Toyo-Nishiki'",
+        "LocationPlaceName": "Shrub Collections",
+        "SourceDisplayNameNew": "Spring Meadow Nursery, Inc.",
+        "FormName": "container"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry":
+      {
+        "type": "Point",
+        "coordinates": [-93.61865170984699, 44.85386696175965]
+      },
+      "properties":
+      {
+        "AccNumQual": "20070224",
+        "CommonName": "Japanese Flowering Quince",
+        "DisplayPlantName": "<em>Chaenomeles &times superba</em> 'Crimson and Gold'",
+        "LocationPlaceName": "Shrub Collections",
+        "SourceDisplayNameNew": "Spring Meadow Nursery, Inc.",
+        "FormName": "container"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry":
+      {
+        "type": "Point",
+        "coordinates": [-93.61861926867968, 44.853855576318075]
+      },
+      "properties":
+      {
+        "AccNumQual": "20070219",
+        "CommonName": "Japanese Flowering Quince",
+        "DisplayPlantName": "<em>Chaenomeles speciosa</em> 'Kingishi'",
+        "LocationPlaceName": "Shrub Collections",
+        "SourceDisplayNameNew": "Spring Meadow Nursery, Inc.",
+        "FormName": "container"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry":
+      {
+        "type": "Point",
+        "coordinates": [-93.61861697136483, 44.8538296978267]
+      },
+      "properties":
+      {
+        "AccNumQual": "20070220",
+        "CommonName": "Japanese Flowering Quince",
+        "DisplayPlantName": "<em>Chaenomeles speciosa</em> 'O Yashima'",
+        "LocationPlaceName": "Shrub Collections",
+        "SourceDisplayNameNew": "Spring Meadow Nursery, Inc.",
+        "FormName": "container"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry":
+      {
+        "type": "Point",
+        "coordinates": [-93.61860714925265, 44.8538427257516]
+      },
+      "properties":
+      {
+        "AccNumQual": "20070217",
+        "CommonName": "Japanese Flowering Quince",
+        "DisplayPlantName": "<em>Chaenomeles</em> 'Iwai Nishiki'",
+        "LocationPlaceName": "Shrub Collections",
+        "SourceDisplayNameNew": "Spring Meadow Nursery, Inc.",
+        "FormName": "container"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry":
+      {
+        "type": "Point",
+        "coordinates": [-93.61859319183114, 44.853828483208474]
+      },
+      "properties":
+      {
+        "AccNumQual": "20070225",
+        "CommonName": "Japanese Flowering Quince",
+        "DisplayPlantName": "<em>Chaenomeles &times superba</em> 'Fusion'",
+        "LocationPlaceName": "Shrub Collections",
+        "SourceDisplayNameNew": "Spring Meadow Nursery, Inc.",
+        "FormName": "container"
+      }
+    }
+  ]
+}
