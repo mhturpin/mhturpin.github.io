@@ -24,7 +24,7 @@ class Kml {
     placemark.appendChild(name);
 
     const description = this.#kmlDoc.createElement('description');
-    const descriptionText = `<h1>Properties:</h1>\n<ul>\n${Object.keys(props).map((k) => `<li>${k}: ${props[k]}</li>`).join('\n')}\n</ul>`;
+    const descriptionText = `Properties:\n${Object.keys(props).map((k) => `* ${k}: ${props[k]}`).join('\n')}\n`;
     description.appendChild(this.#kmlDoc.createCDATASection(descriptionText));
     placemark.appendChild(description);
 
