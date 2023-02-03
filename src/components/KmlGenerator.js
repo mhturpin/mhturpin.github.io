@@ -50,7 +50,7 @@ function KmlGenerator() {
       outputJson.features = outputJson.features.map((f) => ({ ...f, properties: { ...f.properties, styleId: `${f.properties.ZONE}-color` } }));
     }
 
-    kml.importFromGeoJson(outputJson, nameField);
+    kml.importFromGeoJson(outputJson, kmlFileName.replace('.kml', ''), nameField);
     setKmlFileContents(kml.toString());
   }
 

@@ -7,7 +7,11 @@ class Kml {
     this.#kmlDoc = parser.parseFromString(kmlString, 'text/xml');
   }
 
-  importFromGeoJson(geoJson, nameField) {
+  importFromGeoJson(geoJson, documentName, nameField) {
+    const name = this.#kmlDoc.createElement('name');
+    name.appendChild(this.#kmlDoc.createCDATASection(documentName));
+    this.#kmlDoc.getElementsByTagName('Document')[0].appendChild(name);
+
     geoJson.features.map((f) => this.addPlacemark(f, nameField));
   }
 
