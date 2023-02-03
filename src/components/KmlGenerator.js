@@ -19,13 +19,15 @@ function KmlGenerator() {
   const updateFile = useCallback(() => {
     const file = document.getElementById('geojson-file').files[0];
     setKmlFileName(file.name.replace('.geojson', '.kml'));
+    setKmlFileContents('');
+    setNameField('');
 
     file.text().then((text) => {
       const inputJson = JSON.parse(text);
       setGeojson(inputJson);
       setPropertyKeys(Object.keys(inputJson.features[0].properties));
     });
-  }, [setGeojson, setPropertyKeys]);
+  }, [setKmlFileName, setKmlFileContents, setNameField, setGeojson, setPropertyKeys]);
 
   const updateNameField = useCallback(() => {
     setNameField(document.querySelector('input[name="placemark-name"]:checked').value);
