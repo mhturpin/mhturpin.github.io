@@ -27,10 +27,7 @@ class Kml {
     name.appendChild(this.#kmlDoc.createCDATASection(props[nameField]));
     placemark.appendChild(name);
 
-    const description = this.#kmlDoc.createElement('description');
-    const descriptionText = `Properties:\n${Object.keys(props).map((k) => `* ${k}: ${props[k]}`).join('\n')}\n`;
-    description.appendChild(this.#kmlDoc.createCDATASection(descriptionText));
-    placemark.appendChild(description);
+    placemark.appendChild(this.createExtendedData(props));
 
     if (props.styleId) {
       const styleUrl = this.#kmlDoc.createElement('styleUrl');
@@ -98,6 +95,25 @@ class Kml {
     point.appendChild(coords);
 
     return point;
+  }
+
+  createExtendedData(properties) {
+    const extendedData = this.#kmlDoc.createElement('ExtendedData');
+
+    Object.keys(properties).map((k) => extendedData.appendChild(this.createData(k, properties[k])));
+
+    return extendedData;
+  }
+
+  createData(name, val) {
+    const data = this.#kmlDoc.createElement('Data', { name: name });
+    data.setAttribute('name', name);
+
+    const value = this.#kmlDoc.createElement('value');
+    value.textContent = val;
+    data.appendChild(value);
+
+    return data;
   }
 
   addColorStyle(id, color) {
