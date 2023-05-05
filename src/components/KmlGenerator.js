@@ -12,6 +12,7 @@ import UsdaZoneColors from '../UsdaZoneColors';
 function KmlGenerator() {
   const [kmlFileName, setKmlFileName] = useState('');
   const [kmlFileContents, setKmlFileContents] = useState('');
+  const [kmlObject, setKmlObject] = useState({});
   const [geojson, setGeojson] = useState({});
   const [propertyKeys, setPropertyKeys] = useState([]);
   const [nameField, setNameField] = useState('');
@@ -53,6 +54,7 @@ function KmlGenerator() {
 
     kml.importFromGeoJson(outputJson, kmlFileName.replace('.kml', ''), nameField);
     setKmlFileContents(kml.toString());
+    setKmlObject(kml.toObject());
   }
 
   return (
@@ -84,7 +86,7 @@ function KmlGenerator() {
 
       <div className='half-page'>
         KML State
-        <KmlDisplay kml={kml} kmlFileContents={kmlFileContents} />
+        <KmlDisplay kmlObject={kmlObject} />
       </div>
     </div>
   );

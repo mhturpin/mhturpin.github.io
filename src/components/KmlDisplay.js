@@ -1,19 +1,15 @@
 import PropTypes from 'prop-types';
 
-import Kml from '../helpers/Kml';
-
 function KmlDisplay(props) {
   return (
     <div>
-      {props.kml.toString()}
-      {props.kmlFileContents}
+      {JSON.stringify(props.kmlObject)}
     </div>
   );
 }
 
 KmlDisplay.propTypes = {
-  kml: PropTypes.instanceOf(Kml).isRequired,
-  kmlFileContents: PropTypes.string.isRequired,
+  kmlObject: PropTypes.object.isRequired,
 };
 
 export default KmlDisplay;

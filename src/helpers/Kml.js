@@ -8,16 +8,22 @@ class Kml {
   }
 
   importFromGeoJson(geoJson, documentName, nameField) {
+    const folder = this.#kmlDoc.createElement('Folder');
     const name = this.#kmlDoc.createElement('name');
     name.appendChild(this.#kmlDoc.createCDATASection(documentName));
-    this.#kmlDoc.getElementsByTagName('Document')[0].appendChild(name);
 
-    geoJson.features.map((f) => this.addPlacemark(f, nameField));
+    folder.appendChild(name);
+
+    geoJson.features.map((f) => this.addPlacemark(f, nameField, folder));
+
+    // add features to folder instead
+
+    this.#kmlDoc.querySelector('Document').appendChild(folder);
   }
 
   // https://datatracker.ietf.org/doc/html/rfc7946
   // Possible geometry types: Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, and GeometryCollection.
-  addPlacemark(feature, nameField) {
+  addPlacemark(feature, nameField, folder) {
     const placemark = this.#kmlDoc.createElement('Placemark');
     const props = feature.properties;
     const coordinates = feature.geometry.coordinates;
@@ -46,7 +52,7 @@ class Kml {
       alert(`Unrecognized feature of type ${type}`);
     }
 
-    this.#kmlDoc.getElementsByTagName('Document')[0].appendChild(placemark);
+    folder.appendChild(placemark);
   }
 
   createPolygon(coordinates) {
@@ -134,13 +140,32 @@ class Kml {
   }
 
   toObject() {
-    const div = document.createElement('div');
+    // Document
+    //   name
+    //   description
+    //   Folder
+    //     name
+    //     Placemark
+    //       name
+    //       ExtendedData
+    //         Data(attr: name)
+    //           value
 
-    [...this.#kmlDoc.getElementsByTagName('Placemark')].forEach((placemark) => {
-      div.appendChild(this.placemarkToHtml(placemark));
-    });
+    const kmlObject = {};
+    // kmlObject.name = this.#kmlDoc.querySelector('Document > name').textContent;
+    // kmlObject.description = this.#kmlDoc.querySelector('Document > description').textContent;
+    kmlObject.folders = [...this.#kmlDoc.querySelectorAll('Document > Folder')].map(this.folderToObject);
 
-    return div;
+    console.log(kmlObject);
+
+    return kmlObject;
+  }
+
+  folderToObject(folder) {
+    const folderObject = {};
+    folderObject.name = folder.childNodes[0].textContent;
+
+    return folderObject;
   }
 }
 
