@@ -133,34 +133,12 @@ class Kml {
     return new XMLSerializer().serializeToString(this.#kmlDoc);
   }
 
-  toHtml() {
+  toObject() {
     const div = document.createElement('div');
 
     [...this.#kmlDoc.getElementsByTagName('Placemark')].forEach((placemark) => {
       div.appendChild(this.placemarkToHtml(placemark));
     });
-
-    return div;
-  }
-
-  placemarkToHtml(placemark) {
-    const div = document.createElement('div');
-
-    const h3 = document.createElement('h3');
-    h3.textContent = placemark.lastChild.nodeName;
-    div.appendChild(h3);
-
-    const name = document.createElement('input');
-    name.value = placemark.getElementsByTagName('name')[0].textContent;
-    div.appendChild(name);
-
-    div.appendChild(document.createElement('br'));
-
-    const description = document.createElement('textarea');
-    description.rows = 10;
-    description.cols = 80;
-    description.value = placemark.getElementsByTagName('description')[0].textContent;
-    div.appendChild(description);
 
     return div;
   }

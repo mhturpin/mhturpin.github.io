@@ -4,6 +4,7 @@ import Checkbox from './Checkbox';
 import DownloadButton from './DownloadButton';
 import FileUpload from './FileUpload';
 import Header from './Header';
+import KmlDisplay from './KmlDisplay';
 import RadioGroup from './RadioGroup';
 import Kml from '../helpers/Kml';
 import UsdaZoneColors from '../UsdaZoneColors';
@@ -14,6 +15,7 @@ function KmlGenerator() {
   const [geojson, setGeojson] = useState({});
   const [propertyKeys, setPropertyKeys] = useState([]);
   const [nameField, setNameField] = useState('');
+  const kml = new Kml();
 
   // Pull data from the file when it's uploaded
   const updateFile = useCallback(() => {
@@ -37,7 +39,6 @@ function KmlGenerator() {
 
   // Convert geojson file to kml
   function processGeojson() {
-    const kml = new Kml();
     let outputJson = geojson;
 
     if (document.getElementById('remove-html-tags').checked) {
@@ -67,17 +68,24 @@ function KmlGenerator() {
         <a href='https://www.ogc.org/standards/kml/'>https://www.ogc.org/standards/kml/</a>
       </p>
 
-      <FileUpload id='geojson-file' label='Upload Geojson' accept='.geojson' onChange={updateFile} />
+      <div className='half-page'>
+        <FileUpload id='geojson-file' label='Upload Geojson' accept='.geojson' onChange={updateFile} />
 
-      {kmlFileName !== '' ? (
-        <>
-          <Checkbox id='include-zone-colors' label='Include styles for USDA plant hardiness zone colors' />
-          <Checkbox id='remove-html-tags' label='Remove HTML tags from properties' />
-          <RadioGroup id='select-name' label='Select which property to use as the placemark names' options={propertyKeys} onChange={updateNameField} />
-          <button type='button' onClick={processGeojson} disabled={nameField === ''}>Convert File to KML</button>
-          <DownloadButton className={kmlFileContents === '' ? 'hidden' : ''} fileName={kmlFileName} fileContents={kmlFileContents} label='Download KML' />
-        </>
-      ) : ''}
+        {kmlFileName !== '' ? (
+          <>
+            <Checkbox id='include-zone-colors' label='Include styles for USDA plant hardiness zone colors' />
+            <Checkbox id='remove-html-tags' label='Remove HTML tags from properties' />
+            <RadioGroup id='select-name' label='Select which property to use as the placemark names' options={propertyKeys} onChange={updateNameField} />
+            <button type='button' onClick={processGeojson} disabled={nameField === ''}>Convert File to KML</button>
+            <DownloadButton className={kmlFileContents === '' ? 'hidden' : ''} fileName={kmlFileName} fileContents={kmlFileContents} label='Download KML' />
+          </>
+        ) : ''}
+      </div>
+
+      <div className='half-page'>
+        KML State
+        <KmlDisplay kml={kml} kmlFileContents={kmlFileContents} />
+      </div>
     </div>
   );
 }
