@@ -78,3 +78,7 @@ button:disabled {
   width: 50%;
   vertical-align: top;
 }
+
+.kml-node {
+  padding-left: 10px;
+}

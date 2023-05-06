@@ -10,13 +10,13 @@ import Kml from '../helpers/Kml';
 import UsdaZoneColors from '../UsdaZoneColors';
 
 function KmlGenerator() {
+  const kml = new Kml();
   const [kmlFileName, setKmlFileName] = useState('');
   const [kmlFileContents, setKmlFileContents] = useState('');
-  const [kmlObject, setKmlObject] = useState({});
+  const [kmlObject, setKmlObject] = useState(kml.getKmlObject());
   const [geojson, setGeojson] = useState({});
   const [propertyKeys, setPropertyKeys] = useState([]);
   const [nameField, setNameField] = useState('');
-  const kml = new Kml();
 
   // Pull data from the file when it's uploaded
   const updateFile = useCallback(() => {
@@ -53,8 +53,7 @@ function KmlGenerator() {
     }
 
     kml.importFromGeoJson(outputJson, kmlFileName.replace('.kml', ''), nameField);
-    setKmlFileContents(kml.toString());
-    setKmlObject(kml.toObject());
+    setKmlObject(kml.getKmlObject());
   }
 
   return (
