@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 function Fonts() {
-  const [text, setText] = useState('奇想天外！生き物のふしぎ生態図鑑【どうぶつ奇想天外／WAKUWAKU】');
+  const [text, setText] = useState('消す');
 
   return (
     <div>
