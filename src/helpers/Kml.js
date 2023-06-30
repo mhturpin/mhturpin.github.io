@@ -2,8 +2,6 @@ class Kml {
   #kmlObject;
 
   constructor() {
-    // const kmlString = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document></Document></kml>';
-
     this.#kmlObject = {
       kml: {
         Document: {
@@ -19,6 +17,7 @@ class Kml {
     return this.#kmlObject;
   }
 
+  // Add data from geoJson to this.#kmlObject
   importFromGeoJson(geoJson, documentName, nameField) {
     const folder = {
       Folder: {
@@ -31,12 +30,14 @@ class Kml {
     this.#kmlObject.kml.Document.Features.push(folder);
   }
 
+  // Create a placemark from the feature
+  // https://developers.google.com/kml/documentation/kmlreference#placemark
   // https://datatracker.ietf.org/doc/html/rfc7946
-  // Possible geometry types: Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, and GeometryCollection.
+  // Possible geometry types: Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, and GeometryCollection
   createPlacemark(feature, nameField) {
     const properties = feature.properties;
-    // const coordinates = feature.geometry.coordinates;
-    // const type = feature.geometry.type;
+    const coordinates = feature.geometry.coordinates;
+    const type = feature.geometry.type;
     const placemark = {
       Placemark: {
         name: properties[nameField],
@@ -45,26 +46,31 @@ class Kml {
       }
     };
 
-    // if (props.styleId) {
-    //   const styleUrl = this.#kmlDoc.createElement('styleUrl');
-    //   styleUrl.textContent = `#${props.styleId}`;
-    //   placemark.appendChild(styleUrl);
-    // }
-
-    // if (type === 'Polygon') {
-    //   placemark.appendChild(this.createPolygon(coordinates));
-    // } else if (type === 'MultiPolygon') {
-    //   placemark.appendChild(this.createMultiGeometry(coordinates));
-    // } else if (type === 'Point') {
-    //   placemark.appendChild(this.createPoint(coordinates));
-    // } else {
-    //   console.log(`Unrecognized feature of type ${type}`);
-    //   alert(`Unrecognized feature of type ${type}`);
-    // }
+    if (type === 'Point') {
+      placemark.Placemark.Point = {
+        coordinates: {
+          latitude: coordinates[1],
+          longitude: coordinates[0]
+        }
+      };
+    } else if (type === 'Polygon') {
+      // Polygon
+      // * outerBoundaryIs
+      //   * LinearRing
+      // * innerBoundaryIs
+      //   * LinearRing
+    } else if (type === 'MultiPolygon') {
+      // MultiGeometry
+      // * for each, create polygon
+    } else {
+      console.log(`Unrecognized feature of type ${type}`);
+      alert(`Unrecognized feature of type ${type}`);
+    }
 
     return placemark;
   }
 
+  // https://developers.google.com/kml/documentation/kmlreference#extendeddata
   createExtendedData(properties) {
     const extendedData = [];
 
@@ -73,6 +79,7 @@ class Kml {
     return extendedData;
   }
 
+  // https://developers.google.com/kml/documentation/kmlreference#elements-specific-to-extendeddata
   createData(name, value) {
     return {
       Data: {
@@ -82,99 +89,54 @@ class Kml {
     };
   }
 
-  // createPolygon(coordinates) {
-  //   const polygon = this.#kmlDoc.createElement('Polygon');
-  //   const outerBoundaryIs = this.#kmlDoc.createElement('outerBoundaryIs');
+  // Convert this.#kmlObject to a string that can be used in a .kml file
+  convertToKmlString() {
+    const kmlDoc = new DOMParser().parseFromString('<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"></kml>', 'text/xml');
 
-  //   outerBoundaryIs.appendChild(this.createLinearRing(coordinates[0]));
-  //   polygon.appendChild(outerBoundaryIs);
+    this.addElementToDocument(kmlDoc, kmlDoc.getElementsByTagName('kml')[0], 'Document', this.#kmlObject.kml.Document);
 
-  //   // Any rings after the first are inner boundaries
-  //   if (coordinates.length > 1) {
-  //     // Skip the first ring
-  //     coordinates.slice(1).forEach((ring) => {
-  //       const innerBoundaryIs = this.#kmlDoc.createElement('innerBoundaryIs');
-  //       innerBoundaryIs.appendChild(this.createLinearRing(ring));
-  //       polygon.appendChild(innerBoundaryIs);
-  //     });
-  //   }
+    return new XMLSerializer().serializeToString(kmlDoc);
+  }
 
-  //   return polygon;
-  // }
+  // Create a kml element from the data and add it to the parent element
+  addElementToDocument(kmlDoc, parent, name, value) {
+    if (name === 'Features') {
+      value.forEach((feature) => {
+        const featureType = Object.keys(feature)[0];
+        this.addElementToDocument(kmlDoc, parent, featureType, feature[featureType]);
+      });
+    } else {
+      const element = kmlDoc.createElement(name);
 
-  // createLinearRing(coordinates) {
-  //   const linearRing = this.#kmlDoc.createElement('LinearRing');
-  //   const coords = this.#kmlDoc.createElement('coordinates');
+      if (name === 'ExtendedData') {
+        value.forEach((feature) => {
+          const featureType = Object.keys(feature)[0];
+          this.addElementToDocument(kmlDoc, element, featureType, feature[featureType]);
+        });
+      } else if (name === 'coordinates') {
+        element.textContent = `${value.longitude},${value.latitude}\n`;
+      } else if (typeof value === 'string') {
+        element.textContent = value;
+      } else {
+        Object.keys(value).forEach((k) => {
+          if (k === 'attributes') {
+            this.setAttributes(element, value[k]);
+          } else {
+            this.addElementToDocument(kmlDoc, element, k, value[k]);
+          }
+        });
+      }
 
-  //   coords.textContent = coordinates.map((pair) => pair.join()).join('\n');
-  //   linearRing.appendChild(coords);
+      parent.appendChild(element);
+    }
+  }
 
-  //   return linearRing;
-  // }
-
-  // createMultiGeometry(coordinates) {
-  //   const multiGeometry = this.#kmlDoc.createElement('MultiGeometry');
-
-  //   coordinates.forEach((polygon) => multiGeometry.appendChild(this.createPolygon(polygon)));
-
-  //   return multiGeometry;
-  // }
-
-  // createPoint(coordinates) {
-  //   const point = this.#kmlDoc.createElement('Point');
-  //   const coords = this.#kmlDoc.createElement('coordinates');
-
-  //   coords.textContent = coordinates.join();
-  //   point.appendChild(coords);
-
-  //   return point;
-  // }
-
-  // addColorStyle(id, color) {
-  //   const style = this.#kmlDoc.createElement('Style');
-  //   style.id = id;
-
-  //   const polyStyle = this.#kmlDoc.createElement('PolyStyle');
-  //   const col = this.#kmlDoc.createElement('color');
-  //   col.textContent = color;
-
-  //   polyStyle.appendChild(col);
-  //   style.appendChild(polyStyle);
-  //   this.#kmlDoc.getElementsByTagName('Document')[0].appendChild(style);
-  // }
-
-  // toString() {
-  //   return new XMLSerializer().serializeToString(this.#kmlDoc);
-  // }
-
-  // toObject() {
-  //   // Document
-  //   //   name
-  //   //   description
-  //   //   Folder
-  //   //     name
-  //   //     Placemark
-  //   //       name
-  //   //       ExtendedData
-  //   //         Data(attr: name)
-  //   //           value
-
-  //   const kmlObject = {};
-  //   // kmlObject.name = this.#kmlDoc.querySelector('Document > name').textContent;
-  //   // kmlObject.description = this.#kmlDoc.querySelector('Document > description').textContent;
-  //   kmlObject.folders = [...this.#kmlDoc.querySelectorAll('Document > Folder')].map(this.folderToObject);
-
-  //   console.log(kmlObject);
-
-  //   return kmlObject;
-  // }
-
-  // folderToObject(folder) {
-  //   const folderObject = {};
-  //   folderObject.name = folder.childNodes[0].textContent;
-
-  //   return folderObject;
-  // }
+  // Set attributes on the element
+  setAttributes(element, attributes) {
+    Object.keys(attributes).forEach((attr) => {
+      element.setAttribute(attr, attributes[attr]);
+    });
+  }
 }
 
 export default Kml;

@@ -77,7 +77,7 @@ function KmlGenerator() {
             <Checkbox id='include-zone-colors' label='Include styles for USDA plant hardiness zone colors' />
             <Checkbox id='remove-html-tags' label='Remove HTML tags from properties' />
             <RadioGroup id='select-name' label='Select which property to use as the placemark names' options={propertyKeys} onChange={updateNameField} />
-            <button type='button' onClick={processGeojson} disabled={nameField === ''}>Convert File to KML</button>
+            <button type='button' onClick={processGeojson} disabled={nameField === ''}>Add File to KML</button>
             <DownloadButton className={kmlFileContents === '' ? 'hidden' : ''} fileName={kmlFileName} fileContents={kmlFileContents} label='Download KML' />
           </>
         ) : ''}
