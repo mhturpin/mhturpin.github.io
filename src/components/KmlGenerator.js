@@ -4,11 +4,13 @@ import Checkbox from './Checkbox';
 import DownloadButton from './DownloadButton';
 import FileUpload from './FileUpload';
 import Header from './Header';
+import KmlDisplay from './KmlDisplay';
 import RadioGroup from './RadioGroup';
 import Kml from '../helpers/Kml';
 import UsdaZoneColors from '../UsdaZoneColors';
 
 function KmlGenerator() {
+  const [kml] = useState(new Kml());
   const [kmlFileName, setKmlFileName] = useState('');
   const [kmlFileContents, setKmlFileContents] = useState('');
   const [geojson, setGeojson] = useState({});
@@ -20,14 +22,13 @@ function KmlGenerator() {
     const file = document.getElementById('geojson-file').files[0];
     setKmlFileName(file.name.replace('.geojson', '.kml'));
     setKmlFileContents('');
-    setNameField('');
 
     file.text().then((text) => {
       const inputJson = JSON.parse(text);
       setGeojson(inputJson);
       setPropertyKeys(Object.keys(inputJson.features[0].properties));
     });
-  }, [setKmlFileName, setKmlFileContents, setNameField, setGeojson, setPropertyKeys]);
+  }, [setKmlFileName, setKmlFileContents, setGeojson, setPropertyKeys]);
 
   const updateNameField = useCallback(() => {
     setNameField(document.querySelector('input[name="placemark-name"]:checked').value);
@@ -37,13 +38,7 @@ function KmlGenerator() {
 
   // Convert geojson file to kml
   function processGeojson() {
-    const kml = new Kml();
-    let outputJson = geojson;
-
-    if (document.getElementById('remove-html-tags').checked) {
-      const text = JSON.stringify(geojson);
-      outputJson = JSON.parse(text.replaceAll(/<.+?>/g, ''));
-    }
+    const outputJson = geojson;
 
     if (document.getElementById('include-zone-colors').checked) {
       Object.keys(UsdaZoneColors).forEach((id) => kml.addColorStyle(id, UsdaZoneColors[id]));
@@ -67,17 +62,23 @@ function KmlGenerator() {
         <a href='https://www.ogc.org/standards/kml/'>https://www.ogc.org/standards/kml/</a>
       </p>
 
-      <FileUpload id='geojson-file' label='Upload Geojson' accept='.geojson' onChange={updateFile} />
+      <div className='half-page'>
+        <FileUpload id='geojson-file' label='Upload Geojson' accept='.geojson' onChange={updateFile} />
 
-      {kmlFileName !== '' ? (
-        <>
-          <Checkbox id='include-zone-colors' label='Include styles for USDA plant hardiness zone colors' />
-          <Checkbox id='remove-html-tags' label='Remove HTML tags from properties' />
-          <RadioGroup id='select-name' label='Select which property to use as the placemark names' options={propertyKeys} onChange={updateNameField} />
-          <button type='button' onClick={processGeojson} disabled={nameField === ''}>Convert File to KML</button>
-          <DownloadButton className={kmlFileContents === '' ? 'hidden' : ''} fileName={kmlFileName} fileContents={kmlFileContents} label='Download KML' />
-        </>
-      ) : ''}
+        {kmlFileName !== '' ? (
+          <>
+            <Checkbox id='include-zone-colors' label='Include styles for USDA plant hardiness zone colors' />
+            <RadioGroup id='select-name' label='Select which property to use as the placemark names' options={propertyKeys} onChange={updateNameField} />
+            <button type='button' onClick={processGeojson} disabled={nameField === ''}>Add File to KML</button>
+            <DownloadButton className={kmlFileContents === '' ? 'hidden' : ''} fileName={kmlFileName} fileContents={kmlFileContents} label='Download KML' />
+          </>
+        ) : ''}
+      </div>
+
+      <div className='half-page'>
+        KML State
+        <KmlDisplay kmlObject={kml.getKmlObject()} />
+      </div>
     </div>
   );
 }

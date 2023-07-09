@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "features":
+  [
+    {
+      "type": "Feature",
+      "geometry":
+      {
+        "type": "Point",
+        "coordinates": [-93.6180718438514, 44.85437034225967]
+      },
+      "properties":
+      {
+        "AccNumQual": "19780339",
+        "CommonName": "Japanese Flowering Quince",
+        "DisplayPlantName": "<em>Chaenomeles japonica</em>",
+        "LocationPlaceName": "Shrub Collections",
+        "SourceDisplayNameNew": "Jewell Nurseries, Inc.",
+        "FormName": "plant"
+      }
+    }
+  ]
+}

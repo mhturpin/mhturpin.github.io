@@ -23,6 +23,7 @@ module.exports = {
     'lines-between-class-members': 'off',
     'max-len': 'off',
     'no-bitwise': 'off',
+    'no-else-return': 'off',
     'no-plusplus': 'off',
     'object-shorthand': 'off',
     'prefer-destructuring': 'off',

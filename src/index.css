@@ -72,3 +72,13 @@ button:disabled {
 .hidden {
   display: none;
 }
+
+.half-page {
+  display: inline-block;
+  width: 50%;
+  vertical-align: top;
+}
+
+.kml-node {
+  padding-left: 10px;
+}
