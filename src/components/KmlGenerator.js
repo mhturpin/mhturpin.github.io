@@ -10,10 +10,9 @@ import Kml from '../helpers/Kml';
 import UsdaZoneColors from '../UsdaZoneColors';
 
 function KmlGenerator() {
-  const kml = new Kml();
+  const [kml] = useState(new Kml());
   const [kmlFileName, setKmlFileName] = useState('');
   const [kmlFileContents, setKmlFileContents] = useState('');
-  const [kmlObject, setKmlObject] = useState(kml.getKmlObject());
   const [geojson, setGeojson] = useState({});
   const [propertyKeys, setPropertyKeys] = useState([]);
   const [nameField, setNameField] = useState('');
@@ -23,14 +22,13 @@ function KmlGenerator() {
     const file = document.getElementById('geojson-file').files[0];
     setKmlFileName(file.name.replace('.geojson', '.kml'));
     setKmlFileContents('');
-    setNameField('');
 
     file.text().then((text) => {
       const inputJson = JSON.parse(text);
       setGeojson(inputJson);
       setPropertyKeys(Object.keys(inputJson.features[0].properties));
     });
-  }, [setKmlFileName, setKmlFileContents, setNameField, setGeojson, setPropertyKeys]);
+  }, [setKmlFileName, setKmlFileContents, setGeojson, setPropertyKeys]);
 
   const updateNameField = useCallback(() => {
     setNameField(document.querySelector('input[name="placemark-name"]:checked').value);
@@ -40,12 +38,7 @@ function KmlGenerator() {
 
   // Convert geojson file to kml
   function processGeojson() {
-    let outputJson = geojson;
-
-    if (document.getElementById('remove-html-tags').checked) {
-      const text = JSON.stringify(geojson);
-      outputJson = JSON.parse(text.replaceAll(/<.+?>/g, ''));
-    }
+    const outputJson = geojson;
 
     if (document.getElementById('include-zone-colors').checked) {
       Object.keys(UsdaZoneColors).forEach((id) => kml.addColorStyle(id, UsdaZoneColors[id]));
@@ -53,7 +46,7 @@ function KmlGenerator() {
     }
 
     kml.importFromGeoJson(outputJson, kmlFileName.replace('.kml', ''), nameField);
-    setKmlObject(kml.getKmlObject());
+    setKmlFileContents(kml.convertToKmlString());
   }
 
   return (
@@ -75,7 +68,6 @@ function KmlGenerator() {
         {kmlFileName !== '' ? (
           <>
             <Checkbox id='include-zone-colors' label='Include styles for USDA plant hardiness zone colors' />
-            <Checkbox id='remove-html-tags' label='Remove HTML tags from properties' />
             <RadioGroup id='select-name' label='Select which property to use as the placemark names' options={propertyKeys} onChange={updateNameField} />
             <button type='button' onClick={processGeojson} disabled={nameField === ''}>Add File to KML</button>
             <DownloadButton className={kmlFileContents === '' ? 'hidden' : ''} fileName={kmlFileName} fileContents={kmlFileContents} label='Download KML' />
@@ -85,7 +77,7 @@ function KmlGenerator() {
 
       <div className='half-page'>
         KML State
-        <KmlDisplay kmlObject={kmlObject} />
+        <KmlDisplay kmlObject={kml.getKmlObject()} />
       </div>
     </div>
   );

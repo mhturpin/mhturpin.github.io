@@ -30,6 +30,12 @@ class Kml {
     this.#kmlObject.kml.Document.Features.push(folder);
   }
 
+  removeHtml(string) {
+    const div = document.createElement('div');
+    div.innerHTML = string;
+    return div.textContent;
+  }
+
   // Create a placemark from the feature
   // https://developers.google.com/kml/documentation/kmlreference#placemark
   // https://datatracker.ietf.org/doc/html/rfc7946
@@ -38,6 +44,9 @@ class Kml {
     const properties = feature.properties;
     const coordinates = feature.geometry.coordinates;
     const type = feature.geometry.type;
+
+    Object.keys(properties).forEach((key) => { properties[key] = this.removeHtml(properties[key]); });
+
     const placemark = {
       Placemark: {
         name: properties[nameField],
