@@ -99,7 +99,7 @@ class Kml {
   }
 
   // Convert this.#kmlObject to a string that can be used in a .kml file
-  convertToKmlString() {
+  toString() {
     const kmlDoc = new DOMParser().parseFromString('<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"></kml>', 'text/xml');
 
     this.addElementToDocument(kmlDoc, kmlDoc.getElementsByTagName('kml')[0], 'Document', this.#kmlObject.kml.Document);

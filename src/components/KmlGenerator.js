@@ -46,7 +46,7 @@ function KmlGenerator() {
     }
 
     kml.importFromGeoJson(outputJson, kmlFileName.replace('.kml', ''), nameField);
-    setKmlFileContents(kml.convertToKmlString());
+    setKmlFileContents(kml.toString());
   }
 
   return (
